@@ -1,17 +1,13 @@
-const { nanoid } = require('nanoid');
+const { nanoid }  = require('nanoid');
 const fsPromises = require('fs/promises');
 const path = require('node:path'); 
-const contactsPath = path.join(__dirname, 'db', 'contacts.json');
+const contactsPath = path.join(__dirname, '..','db', 'contacts.json');
 
 async function listContacts() {
-    try {
-        const buffer = await fsPromises.readFile(contactsPath);
-        const contactsJson = buffer.toString(); 
-        const contactsArr = JSON.parse(contactsJson);
-        return contactsArr;
-    } catch (error) {
-        console.log(error.message);
-    }
+    const buffer = await fsPromises.readFile(contactsPath);
+    const contactsJson = buffer.toString(); 
+    const contactsArr = JSON.parse(contactsJson);
+    return contactsArr;  
 }
 
 async function getContactById(contactId) {
