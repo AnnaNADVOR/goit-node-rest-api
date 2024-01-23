@@ -28,7 +28,7 @@ async function addContact(name, email, phone) {
         phone,
     }
     contactsArr.push(newContact);
-    await fsPromises.writeFile(contactsPath, JSON.stringify(contactsArr, null, 2)).catch(error => console.log(error.message));
+    await fsPromises.writeFile(contactsPath, JSON.stringify(contactsArr, null, 2));
     return newContact;
 }
 

@@ -6,18 +6,16 @@ const {
 } = require("../services/contactsServices")
 
 const {HttpError} = require("../helpers")
-const getAllContacts = async (req, res) => {
+const getAllContacts = async (req, res, next) => {
     try {
-      const allContacts = await listContacts();
-    res.json(allContacts);  
+        const allContacts = await listContacts();
+        res.json(allContacts);  
     } catch (error) {
-        res.status(500).json({
-            message: "Server error!"
-        })       
+        next(error);      
     }    
 };
 
-const getOneContact = async (req, res) => {
+const getOneContact = async (req, res, next) => {
     try {
         const { id } = req.params;
         const foundContact = await getContactById(id);
@@ -26,17 +24,23 @@ const getOneContact = async (req, res) => {
         }
         res.json(foundContact);
     } catch (error) {
-        const { status = 500, message = "Server error!" } = error;
-        res.status(status).json({
-            message,
-        })       
+        next(error);    
     }  
-
 };
 
-const deleteContact = (req, res) => {};
+const deleteContact = (req, res, next) => {
+ 
+};
 
-const createContact = (req, res) => { };
+const createContact = async (req, res, next) => {
+    try {
+        const { name, email, phone } = req.body;
+        const newContact = await addContact(name, email, phone);  
+        res.status(201).json(newContact);
+    } catch (error) {
+        next(error);  
+    }
+ };
 
 const updateContact = (req, res) => { };
 
