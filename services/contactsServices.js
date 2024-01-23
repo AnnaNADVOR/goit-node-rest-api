@@ -39,13 +39,25 @@ async function removeContact(contactId) {
         return null;
     }
     const [deleteContact] = contactsArr.splice(index, 1);
-    await fsPromises.writeFile(contactsPath, JSON.stringify(contactsArr, null, 2)).catch(error => console.log(error.message));
+    await fsPromises.writeFile(contactsPath, JSON.stringify(contactsArr, null, 2));
     return deleteContact;
 }
 
+async function updateContactById(id, contactData) {
+    const contactsArr = await listContacts();
+    const index = contactsArr.findIndex(contact => contact.id === id);
+    if (index === -1) {
+        return null;
+    }
+    contactsArr[index] = { id, ...contactData };
+    await fsPromises.writeFile(contactsPath, JSON.stringify(contactsArr, null, 2));
+    console.log("contactsArr[index]", contactsArr[index])
+    return contactsArr[index]; 
+}
 module.exports = {
     listContacts,
     getContactById,
     addContact,
     removeContact,
+    updateContactById,
 }

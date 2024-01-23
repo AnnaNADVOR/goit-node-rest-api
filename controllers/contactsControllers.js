@@ -3,9 +3,11 @@ const {
     getContactById,
     addContact,
     removeContact,
-} = require("../services/contactsServices")
+    updateContactById,
+} = require("../services/contactsServices");
+const { HttpError } = require("../helpers");
+const { createContactSchema } = require("../schemas/contactsSchemas");
 
-const {HttpError} = require("../helpers")
 const getAllContacts = async (req, res, next) => {
     try {
         const allContacts = await listContacts();
@@ -34,15 +36,36 @@ const deleteContact = (req, res, next) => {
 
 const createContact = async (req, res, next) => {
     try {
+        const {error} = createContactSchema.validate(req.body)
+        if (error) {
+            throw HttpError(400);
+        }
         const { name, email, phone } = req.body;
         const newContact = await addContact(name, email, phone);  
         res.status(201).json(newContact);
     } catch (error) {
         next(error);  
     }
- };
+};
 
-const updateContact = (req, res) => { };
+const updateContact = async (req, res, next) => {
+    try {
+        const {error} = createContactSchema.validate(req.body)
+        if (error) {
+            throw HttpError(400);
+        }
+       
+        const { id } = req.params; 
+        const data = req.body; 
+        const result = await updateContactById(id, data);
+        if (!result) {
+            throw HttpError(404);     
+        }
+        res.json(result);
+    } catch (error) {
+        next(error); 
+    }
+};
 
 module.exports = {
     getAllContacts,
