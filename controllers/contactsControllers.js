@@ -30,8 +30,17 @@ const getOneContact = async (req, res, next) => {
     }  
 };
 
-const deleteContact = (req, res, next) => {
- 
+const deleteContact = async (req, res, next) => {
+    try {
+        const { id } = req.params; 
+        const result = await removeContact(id); 
+        if (!result) {
+            throw  HttpError(404);   
+        }
+        res.json(result);
+    } catch (error) {
+        next(error);
+    }
 };
 
 const createContact = async (req, res, next) => {
@@ -53,8 +62,7 @@ const updateContact = async (req, res, next) => {
         const {error} = createContactSchema.validate(req.body)
         if (error) {
             throw HttpError(400);
-        }
-       
+        }       
         const { id } = req.params; 
         const data = req.body; 
         const result = await updateContactById(id, data);

@@ -51,9 +51,9 @@ async function updateContactById(id, contactData) {
     }
     contactsArr[index] = { id, ...contactData };
     await fsPromises.writeFile(contactsPath, JSON.stringify(contactsArr, null, 2));
-    console.log("contactsArr[index]", contactsArr[index])
     return contactsArr[index]; 
 }
+
 module.exports = {
     listContacts,
     getContactById,
