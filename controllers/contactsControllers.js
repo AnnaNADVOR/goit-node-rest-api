@@ -6,12 +6,15 @@ const {
     updateContactById,
 } = require("../services/contactsServices");
 const { HttpError } = require("../helpers");
-const { createContactSchema } = require("../schemas/contactsSchemas");
+const {
+    createContactSchema,
+updateContactSchema} = require("../schemas/contactsSchemas");
+const { object } = require("joi");
 
 const getAllContacts = async (req, res, next) => {
     try {
-        const allContacts = await listContacts();
-        res.json(allContacts);  
+        const result = await listContacts();
+        res.json(result);  
     } catch (error) {
         next(error);      
     }    
@@ -20,11 +23,11 @@ const getAllContacts = async (req, res, next) => {
 const getOneContact = async (req, res, next) => {
     try {
         const { id } = req.params;
-        const foundContact = await getContactById(id);
-        if (!foundContact) {
+        const result = await getContactById(id);
+        if (!result) {
             throw HttpError(404);     
         }
-        res.json(foundContact);
+        res.json(result);
     } catch (error) {
         next(error);    
     }  
@@ -50,8 +53,8 @@ const createContact = async (req, res, next) => {
             throw HttpError(400);
         }
         const { name, email, phone } = req.body;
-        const newContact = await addContact(name, email, phone);  
-        res.status(201).json(newContact);
+        const result = await addContact(name, email, phone);  
+        res.status(201).json(result);
     } catch (error) {
         next(error);  
     }
@@ -59,12 +62,15 @@ const createContact = async (req, res, next) => {
 
 const updateContact = async (req, res, next) => {
     try {
-        const {error} = createContactSchema.validate(req.body)
+        const { error } = updateContactSchema.validate(req.body);
         if (error) {
-            throw HttpError(400);
+            throw HttpError(400, error.message);
         }       
         const { id } = req.params; 
         const data = req.body; 
+        if(!Object.keys(data).length){
+            throw HttpError(400, "Body must have at least one field");
+        }
         const result = await updateContactById(id, data);
         if (!result) {
             throw HttpError(404);     
