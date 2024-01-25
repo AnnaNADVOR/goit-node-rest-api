@@ -68,11 +68,6 @@ const updateContact = async (req, res, next) => {
         }       
         const { id } = req.params; 
         const data = req.body; 
-          
-        if(!Object.keys(data).length){
-            throw HttpError(400, "Body must have at least one field");
-        }
-  
         const result = await updateContactById(id, data);
         if (!result) {
             throw HttpError(404, "Not found");     
