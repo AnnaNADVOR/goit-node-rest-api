@@ -49,7 +49,7 @@ async function updateContactById(id, contactData) {
     if (index === -1) {
         return null;
     }
-    contactsArr[index] = { id, ...contactData };
+    contactsArr[index] = {...contactsArr[index], ...contactData };
     await fsPromises.writeFile(contactsPath, JSON.stringify(contactsArr, null, 2));
     return contactsArr[index]; 
 }
