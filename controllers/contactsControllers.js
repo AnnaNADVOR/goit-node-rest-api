@@ -9,10 +9,10 @@ const {
     HttpError,
     controllerWrapper,
 } = require("../helpers");
-const {
-    createContactSchema,
-    updateContactSchema
-} = require("../schemas/contactsSchemas");
+// const {
+//     createContactSchema,
+//     updateContactSchema
+// } = require("../schemas/contactsSchemas");
 
 
 const getAllContacts = async (_, res) => {
@@ -39,20 +39,20 @@ const deleteContact = async (req, res) => {
 };
 
 const createContact = async (req, res) => {
-    const {error} = createContactSchema.validate(req.body)
-    if (error) {
-        throw HttpError(400, error.message);
-    }
+    // const {error} = createContactSchema.validate(req.body)
+    // if (error) {
+    //     throw HttpError(400, error.message);
+    // }
     const { name, email, phone } = req.body;
     const result = await addContact(name, email, phone);  
      res.status(201).json(result);   
 };
 
 const updateContact = async (req, res) => {
-    const { error } = updateContactSchema.validate(req.body);
-    if (error) {
-        throw HttpError(400, error.message);
-    }       
+    // const { error } = updateContactSchema.validate(req.body);
+    // if (error) {
+    //     throw HttpError(400, error.message);
+    // }       
     const { id } = req.params; 
     const data = req.body; 
     const result = await updateContactById(id, data);
