@@ -3,11 +3,12 @@ const morgan = require ("morgan");
 const cors = require("cors");
 const contactsRouter = require ("./routes/contactsRouter.js");
 const dotenv = require("dotenv");
-dotenv.config()//шукає текстовий файл .env і додає значення в змінні оточення в обєкт process.env
+dotenv.config();
 
 const app = express();
+const formatLogger = app.get('env')==="development"?"dev":"short"
 
-app.use(morgan("tiny"));
+app.use(morgan(formatLogger));
 app.use(cors());
 app.use(express.json());
 
