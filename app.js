@@ -2,6 +2,8 @@ const express = require ("express");
 const morgan = require ("morgan");
 const cors = require("cors");
 const contactsRouter = require ("./routes/contactsRouter.js");
+const dotenv = require("dotenv");
+dotenv.config()//шукає текстовий файл .env і додає значення в змінні оточення в обєкт process.env
 
 const app = express();
 
