@@ -3,7 +3,7 @@ const controllerWrapper = controller => {
         try {
             await controller(request, response, next);
         } catch (error) {
-            next(error);
+            next(error);            
         }     
     }
     
