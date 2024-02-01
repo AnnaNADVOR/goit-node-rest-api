@@ -12,8 +12,7 @@ const contactSchema = new Schema({
         type: String,
     },
     phone:  {
-        type: String,
-        // match: /^\d{2}-\d{2}-\d{4}$/,
+        type: String,        
     },
     favorite:  {
         type: Boolean,
@@ -29,19 +28,24 @@ const createContactSchema = Joi.object({
     name: Joi.string().required(),
     email: Joi.string().required(),
     phone: Joi.string().required(),
-    favorite: Joi.boolean()
+    favorite: Joi.boolean(),
 });
 
 const updateContactSchema = Joi.object({
     name: Joi.string(),
     email: Joi.string(),
     phone: Joi.string(),
-    favorite: Joi.boolean()
+    favorite: Joi.boolean(),
 }).min(1).message("Body must have at least one field");
+
+const updateStatusContactSchema = Joi.object({
+    favorite: Joi.boolean().required(),
+})
 
 const schemas = {
     createContactSchema,
     updateContactSchema, 
+    updateStatusContactSchema,
 }
 
 module.exports = {
