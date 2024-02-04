@@ -1,7 +1,8 @@
 const express = require ("express");
 const morgan = require ("morgan");
 const cors = require("cors");
-const contactsRouter = require ("./routes/contactsRouter.js");
+const contactsRouter = require("./routes/contactsRouter.js");
+const authRouter = require("./routes/authRouter.js")
 const dotenv = require("dotenv");
 dotenv.config();
 
@@ -11,6 +12,7 @@ app.use(morgan("tiny"));
 app.use(cors());
 app.use(express.json());
 
+app.use("/api/auth", authRouter);
 app.use("/api/contacts", contactsRouter);
 
 app.use((_, res) => {
