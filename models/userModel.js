@@ -1,5 +1,7 @@
 const { Schema, model } = require("mongoose");
+const Joi= require("joi");
 const { handleMongooseError } = require("../helpers");
+const subscriptions = ["starter", "pro", "business"];
 
 const userSchema = new Schema({
     password: {
@@ -13,18 +15,19 @@ const userSchema = new Schema({
     },
     subscription: {
         type: String,
-        enum: ["starter", "pro", "business"],
-        default: "starter"
+        enum: subscriptions,
+        default: "starter",
     },
     token: String
 }, { versionKey: false, timestamps: true }); 
 
-contactSchema.post("save", handleMongooseError);
+userSchema.post("save", handleMongooseError);
 const User = model("User", userSchema);
 
 const registerSchema = Joi.object({
     email: Joi.string().required(),
     password: Joi.string().required(),
+    subscriptions: Joi.string().valid(subscriptions), 
 })
 
 const loginSchema = Joi.object({
