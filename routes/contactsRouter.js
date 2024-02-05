@@ -10,12 +10,13 @@ const {
 const {
   validateBody,
   isValidId,
-} = require("../helpers");
+  authenticate,
+} = require("../middlewares");
 const {schemas} = require("../models/contactModel");
 
 const contactsRouter = express.Router();
 
-contactsRouter.get("/", getAllContacts);
+contactsRouter.get("/", authenticate, getAllContacts);
 
 contactsRouter.get("/:id", isValidId, getOneContact);
 
