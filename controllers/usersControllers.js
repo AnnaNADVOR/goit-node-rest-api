@@ -26,7 +26,7 @@ const userRegictration = async (req, res) => {
 }
 
 const userLogin = async (req, res) => {
-    const { email, password, subscriptions } = req.body; 
+    const { email, password } = req.body; 
     const user = await User.findOne({ email });
     if (!user) {
         throw HttpError(401, "Email or password is wrong");
@@ -37,7 +37,7 @@ const userLogin = async (req, res) => {
     }
     const payload = { id: user._id }
     const token = jwt.sign(payload, SECRET_KEY, { expiresIn: "1w" });
-
+    await User.findOneAndUpdate(user._id, {token})
     res.status(200).json({
         token,
         user: {
@@ -47,7 +47,36 @@ const userLogin = async (req, res) => {
     })
 }
 
+const getCurrent = async (req, res, next) => {
+    const { email, subscription } = req.user; 
+    res.status(200).json ({
+        email,
+        subscription,
+    })
+}
+
+const userLogout = async (req, res, next) => {
+    const {_id } = req.user; 
+    await User.findOneAndUpdate(_id, { token: "" }); 
+    res.status(204).json({
+       message: "No Content"
+    })
+}
+
+const updateSubscription = async (req, res, next) => {
+    const { _id, subscription } = req.user; 
+    const data = req.body; 
+    const result = await User.findByIdAndUpdate(_id, data, { new: true });
+    if (!result) {
+        throw HttpError(404, "Not found");     
+    }
+    res.json(result);
+}
+
 module.exports = {
     userRegictration: controllerWrapper(userRegictration),
     userLogin: controllerWrapper(userLogin),
+    userLogout: controllerWrapper(userLogout),
+    getCurrent: controllerWrapper(getCurrent),
+    updateSubscription: controllerWrapper(updateSubscription),
 }
