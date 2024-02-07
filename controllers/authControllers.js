@@ -14,10 +14,8 @@ const userRegictration = async (req, res) => {
     if (user) {
         throw HttpError(409, "Email in use");
     }
-
     const salt = await bcrypt.genSalt(10);
     const hashPassword = await bcrypt.hash(password, salt);
-
     const newUser = await User.create({...req.body, password: hashPassword});
     res.status(201).json({
         user: {

@@ -18,14 +18,14 @@ const contactsRouter = express.Router();
 
 contactsRouter.get("/", authenticate, getAllContacts);
 
-contactsRouter.get("/:id", isValidId, getOneContact);
+contactsRouter.get("/:id", authenticate, isValidId, getOneContact);
 
-contactsRouter.delete("/:id",  isValidId, deleteContact);
+contactsRouter.delete("/:id", authenticate, isValidId, deleteContact);
 
-contactsRouter.post("/", validateBody(schemas.createContactSchema), createContact);
+contactsRouter.post("/", authenticate, validateBody(schemas.createContactSchema), createContact);
 
-contactsRouter.put("/:id", isValidId, validateBody(schemas.updateContactSchema), updateContact);
+contactsRouter.put("/:id", authenticate, isValidId, validateBody(schemas.updateContactSchema), updateContact);
 
-contactsRouter.patch("/:id/favorite", isValidId, validateBody(schemas.updateStatusContactSchema), updateStatusContact)
+contactsRouter.patch("/:id/favorite",authenticate, isValidId, validateBody(schemas.updateStatusContactSchema), updateStatusContact)
 
 module.exports =  contactsRouter;
