@@ -58,13 +58,11 @@ const getCurrent = async (req, res, next) => {
 const userLogout = async (req, res, next) => {
     const {_id } = req.user; 
     await User.findOneAndUpdate(_id, { token: "" }); 
-    res.status(204).json({
-       message: "No Content"
-    })
+    res.status(204).json({});
 }
 
 const updateSubscription = async (req, res, next) => {
-    const { _id, subscription } = req.user; 
+    const { _id } = req.user; 
     const data = req.body; 
     const result = await User.findByIdAndUpdate(_id, data, { new: true });
     if (!result) {
