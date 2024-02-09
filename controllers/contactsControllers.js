@@ -40,6 +40,11 @@ const deleteContact = async (req, res) => {
 
 const createContact = async (req, res) => {
     const { _id: owner } = req.user; 
+    const { email, name, number } = req.body;
+    const contact = await Contact.exists({ email, name, number, owner });
+    if (contact) {
+        throw HttpError(409, "Contact already exists");        
+    }  
     const result = await Contact.create({ ...req.body, owner });  
     res.status(201).json(result);   
 };
