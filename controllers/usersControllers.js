@@ -1,10 +1,16 @@
+const bcrypt = require('bcryptjs');
+const jwt = require("jsonwebtoken"); 
+const path = require("path");
+const fs = require("fs/promises");
+const gravatar = require("gravatar");
+const Jimp = require("jimp");
+
 const {
     HttpError,
     controllerWrapper,
 } = require("../helpers");
 const { User } = require("../models/userModel"); 
-const bcrypt = require('bcryptjs');
-const jwt = require("jsonwebtoken"); 
+
 require('dotenv').config();
 const { SECRET_KEY } = process.env; 
 
@@ -16,11 +22,13 @@ const userRegictration = async (req, res) => {
     }
     const salt = await bcrypt.genSalt(10);
     const hashPassword = await bcrypt.hash(password, salt);
-    const newUser = await User.create({...req.body, password: hashPassword});
+    const avatarURL = gravatar.url(email);
+
+    const newUser = await User.create({...req.body, password: hashPassword, avatarURL});
     res.status(201).json({
         user: {
             email: newUser.email,
-            subscription: newUser.subscription,
+            subscription: newUser.subscription,            
         }
     })
 }
@@ -71,10 +79,35 @@ const updateSubscription = async (req, res, next) => {
     res.json(result);
 }
 
+const updateAvatar = async (req, res, next) => {
+    const { _id } = req.user; 
+    const avatarsDir = path.join(__dirname, "../", "public", "avatars");
+    
+    const { path: oldPath, originalname } = req.file; 
+    const fileName = `${_id}_${originalname}`; 
+    const newPath = path.join(avatarsDir, fileName); 
+    try {
+        const avatar = await Jimp.read(oldPath);
+        avatar
+            .resize(250, 250)
+            .write(newPath);
+    } catch (error) {
+        throw HttpError (404)
+    }
+
+    // await fs.rename(oldPath, newPath);
+    const avatarURL = path.join("avatars", fileName); 
+    await User.findByIdAndUpdate(_id, { avatarURL }); 
+    res.status(200).json({
+        avatarURL,
+    })
+}
+
 module.exports = {
     userRegictration: controllerWrapper(userRegictration),
     userLogin: controllerWrapper(userLogin),
     userLogout: controllerWrapper(userLogout),
     getCurrent: controllerWrapper(getCurrent),
     updateSubscription: controllerWrapper(updateSubscription),
+    updateAvatar: controllerWrapper(updateAvatar),
 }

@@ -11,10 +11,11 @@ const {
   validateBody,
   isValidId,
   authenticate,
+  
 } = require("../middlewares");
 const {schemas} = require("../models/contactModel");
 
-const contactsRouter = express.Router();
+const contactsRouter = express.Router(); 
 
 contactsRouter.get("/", authenticate, getAllContacts);
 

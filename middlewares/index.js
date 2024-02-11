@@ -1,9 +1,11 @@
-const validateBody = require("../middlewares/validateBody");
-const isValidId = require("../middlewares/isValidId");
-const authenticate = require("../middlewares/authenticate");
+const validateBody = require("./validateBody");
+const isValidId = require("./isValidId");
+const authenticate = require("./authenticate");
+const upload = require("./upload");
 
 module.exports = {
     validateBody,
     isValidId,
     authenticate,
+    upload,
 }
