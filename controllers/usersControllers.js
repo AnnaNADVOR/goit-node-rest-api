@@ -22,7 +22,7 @@ const userRegictration = async (req, res) => {
     }
     const salt = await bcrypt.genSalt(10);
     const hashPassword = await bcrypt.hash(password, salt);
-    const avatarURL = gravatar.url(email);
+    const avatarURL = gravatar.url(email, {d: "identicon"});
 
     const newUser = await User.create({...req.body, password: hashPassword, avatarURL});
     res.status(201).json({
@@ -82,7 +82,9 @@ const updateSubscription = async (req, res, next) => {
 const updateAvatar = async (req, res, next) => {
     const { _id } = req.user; 
     const avatarsDir = path.join(__dirname, "../", "public", "avatars");
-    
+    if (!req.file) {
+        throw HttpError(400, "File is required!");     
+    }
     const { path: oldPath, originalname } = req.file; 
     const fileName = `${_id}_${originalname}`; 
     const newPath = path.join(avatarsDir, fileName); 
@@ -90,12 +92,12 @@ const updateAvatar = async (req, res, next) => {
         const avatar = await Jimp.read(oldPath);
         avatar
             .resize(250, 250)
-            .write(newPath);
+            .write(oldPath);
     } catch (error) {
         throw HttpError (404)
     }
 
-    // await fs.rename(oldPath, newPath);
+    await fs.rename(oldPath, newPath);
     const avatarURL = path.join("avatars", fileName); 
     await User.findByIdAndUpdate(_id, { avatarURL }); 
     res.status(200).json({
