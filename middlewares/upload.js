@@ -2,7 +2,7 @@ const multer = require("multer");
 const path = require("path");
 const { HttpError } = require ("../helpers")
 const tempDir = path.join(__dirname, "../", "temp"); 
-// console.log("upload")
+
 const storage = multer.diskStorage({
     destination: tempDir,
     filename: (req, file, cb) => {
@@ -11,12 +11,11 @@ const storage = multer.diskStorage({
 })
 
 const fileFilter = (req, file, cb) => {
-    if (file.mimetype.startsWith('image/')) {
-        cb(null, true);       
-    } else {
+    if (!file.mimetype.startsWith('image/')){
         cb(HttpError(400, 'Only images is allowed'), false);   
-    }
-    
+    } else {
+        cb(null, true);    
+    }              
 }
 
 const upload = multer({

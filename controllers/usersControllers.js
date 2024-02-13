@@ -4,6 +4,7 @@ const path = require("path");
 const fs = require("fs/promises");
 const gravatar = require("gravatar");
 const Jimp = require("jimp");
+const multer = require("multer");
 
 const {
     HttpError,
@@ -82,6 +83,7 @@ const updateSubscription = async (req, res, next) => {
 const updateAvatar = async (req, res, next) => {
     const { _id } = req.user; 
     const avatarsDir = path.join(__dirname, "../", "public", "avatars");
+   
     if (!req.file) {
         throw HttpError(400, "File is required!");     
     }
@@ -98,7 +100,8 @@ const updateAvatar = async (req, res, next) => {
     }
 
     await fs.rename(oldPath, newPath);
-    const avatarURL = path.join("avatars", fileName); 
+    // const avatarURL = path.join("avatars", fileName); 
+    const avatarURL = "/avatars/" + fileName; 
     await User.findByIdAndUpdate(_id, { avatarURL }); 
     res.status(200).json({
         avatarURL,
@@ -111,5 +114,5 @@ module.exports = {
     userLogout: controllerWrapper(userLogout),
     getCurrent: controllerWrapper(getCurrent),
     updateSubscription: controllerWrapper(updateSubscription),
-    updateAvatar: controllerWrapper(updateAvatar),
+    updateAvatar: controllerWrapper(updateAvatar),   
 }
