@@ -4,7 +4,6 @@ const path = require("path");
 const fs = require("fs/promises");
 const gravatar = require("gravatar");
 const Jimp = require("jimp");
-const multer = require("multer");
 
 const {
     HttpError,
@@ -100,7 +99,6 @@ const updateAvatar = async (req, res, next) => {
     }
 
     await fs.rename(oldPath, newPath);
-    // const avatarURL = path.join("avatars", fileName); 
     const avatarURL = "/avatars/" + fileName; 
     await User.findByIdAndUpdate(_id, { avatarURL }); 
     res.status(200).json({
