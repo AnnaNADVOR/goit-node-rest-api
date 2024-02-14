@@ -82,7 +82,6 @@ const updateSubscription = async (req, res, next) => {
 const updateAvatar = async (req, res, next) => {
     const { _id } = req.user; 
     const avatarsDir = path.join(__dirname, "../", "public", "avatars");
-   
     if (!req.file) {
         throw HttpError(400, "File is required!");     
     }
